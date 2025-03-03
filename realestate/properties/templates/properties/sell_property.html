@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Property | RealEstate</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient-start: #56ccf2;
+            --primary-gradient-end: #2f80ed;
+            --text-color: #333;
+            --border-color: #e1e1e1;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .page-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(86, 204, 242, 0.1) 0%, rgba(47, 128, 237, 0.05) 70%, transparent 100%);
+            z-index: -1;
+            transform: rotate(-15deg);
+        }
+        
+        .left-panel {
+            width: 35%;
+            background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+            position: fixed; /* Change to fixed */
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow: hidden;
+            box-shadow: 10px 0 30px rgba(47, 128, 237, 0.2);
+        }
+        
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.6;
+        }
+        
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+        
+        .left-panel-content {
+            max-width: 400px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .left-panel-logo {
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .left-panel h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .left-panel p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+        
+        .feature-list li {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            position: relative;
+            padding-left: 35px;
+        }
+        
+        .feature-list li:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-list li:after {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        
+        .main-content {
+            width: 65%;
+            padding: 40px;
+            margin-left: 35%; /* Add margin equal to left-panel width */
+            min-height: 100vh;
+            overflow-y: auto; /* Enable vertical scrolling */
+            position: relative;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(47, 128, 237, 0.15);
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .form-header::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        
+        .form-header h2 {
+            font-size: 32px;
+            background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .form-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #444;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #eaeaea;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02) inset;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-gradient-start);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(86, 204, 242, 0.2);
+            background-color: #fff;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f80ed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+            padding-right: 45px;
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: none;
+            padding: 16px 30px;
+            font-size: 16px;
+            line-height: 1.5;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-primary {
+            color: #fff;
+            background: linear-gradient(45deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 6px 20px rgba(47, 128, 237, 0.3);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(47, 128, 237, 0.4);
+            transform: translateY(-3px);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-gradient-end), var(--primary-gradient-start));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        
+        .form-col {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+        
+        /* Fancy input effect */
+        .input-container {
+            position: relative;
+        }
+        
+        .form-highlight {
+            position: relative;
+        }
+        
+        .form-highlight::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+        
+        .form-highlight:focus-within::before {
+            border-color: rgba(86, 204, 242, 0.3);
+        }
+        
+        .form-highlight:focus-within label {
+            color: var(--primary-gradient-end);
+        }
+        
+        /* Floating labels effect */
+        .floating-label {
+            position: relative;
+        }
+        
+        .floating-label label {
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            transition: all 0.3s;
+            background-color: transparent;
+            z-index: 1;
+            margin: 0;
+            padding: 0 5px;
+            pointer-events: none;
+            text-transform: none;
+            font-weight: 400;
+            color: #777;
+            letter-spacing: normal;
+        }
+        
+        .floating-label input:focus + label,
+        .floating-label input:not(:placeholder-shown) + label,
+        .floating-label select:focus + label,
+        .floating-label select:not([value=""]):not(:focus) + label,
+        .floating-label textarea:focus + label,
+        .floating-label textarea:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 15px;
+            font-size: 12px;
+            color: var(--primary-gradient-end);
+            font-weight: 600;
+            background-color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+        
+        .floating-label input,
+        .floating-label select,
+        .floating-label textarea {
+            padding-top: 20px;
+            padding-bottom: 12px;
+        }
+        
+        .floating-label input::placeholder {
+            color: transparent;
+        }
+        
+        .floating-label input:focus::placeholder {
+            color: #aaa;
+        }
+        
+        /* Fancy checkbox/radio styling */
+        input[type="checkbox"], input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-gradient-end);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Upload field styling */
+        input[type="file"] {
+            padding: 20px;
+            border: 2px dashed #ccc;
+            background-color: #f9f9f9;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        input[type="file"]:hover {
+            border-color: var(--primary-gradient-end);
+            background-color: rgba(47, 128, 237, 0.05);
+        }
+        
+        /* Form field animation */
+        .form-control {
+            transform: translateY(0);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-control:focus {
+            transform: translateY(-2px);
+        }
+        
+        /* Decoration elements */
+        .decoration-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .decoration-circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+        }
+        
+        .decoration-circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: 10%;
+        }
+        
+        .decoration-circle-3 {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            right: 10%;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .left-panel {
+                width: 40%;
+            }
+            
+            .main-content {
+                width: 60%;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .page-container {
+                flex-direction: column;
+            }
+            
+            .left-panel, .main-content {
+                width: 100%;
+            }
+            
+            .left-panel {
+                position: relative; /* Reset position for mobile */
+                width: 100%;
+                padding: 40px 20px;
+            }
+            
+            .left-panel-content {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .form-col {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            .main-content {
+                width: 100%;
+                margin-left: 0; /* Reset margin for mobile */
+                padding: 20px;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Decorative elements -->
+        <div class="decoration-circle decoration-circle-1"></div>
+        <div class="decoration-circle decoration-circle-2"></div>
+        <div class="decoration-circle decoration-circle-3"></div>
+        
+        <div class="left-panel">
+            <div class="left-panel-content">
+                <div class="left-panel-logo">RealEstate Pro</div>
+                <h1>List Your Property With Us</h1>
+                <p>Connect with thousands of potential buyers and renters by listing your property on our platform. Get the best market value for your investment.</p>
+                
+                <ul class="feature-list">
+                    <li>Connect with thousands of verified buyers</li>
+                    <li>Professional listing management services</li>
+                    <li>Real-time insights and analytics dashboard</li>
+                    <li>Dedicated relationship manager for VIP listings</li>
+                    <li>Multi-channel advertising and promotion</li>
+                </ul>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">15K+</div>
+                        <div class="stat-label">Properties Listed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">30 Days</div>
+                        <div class="stat-label">Avg. Closing Time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Add Your Property</h2>
+                    <p>Fill out the details below to get started with your listing</p>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    {% for field in form %}
+                        <div class="form-group form-highlight floating-label">
+                            {{ field.errors }}
+                            {{ field }}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary">Submit Your Property</button>
+                </form>
+                
+                <!-- Add this hidden input to help debug URL issues -->
+                <input type="hidden" id="debug-url" value="{% url 'get_areas' %}">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Style all form inputs
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                element.classList.add('form-control');
+                
+                if (element.tagName === 'INPUT' && element.type !== 'file' && element.type !== 'checkbox' && element.type !== 'radio') {
+                    element.setAttribute('placeholder', ' ');
+                }
+                
+                // Special styling for file inputs
+                if (element.type === 'file') {
+                    const parent = element.parentNode;
+                    if (parent.classList.contains('floating-label')) {
+                        parent.classList.remove('floating-label');
+                    }
+                }
+                
+                // Special styling for checkboxes and radios
+                if (element.type === 'checkbox' || element.type === 'radio') {
+                    const parent = element.parentNode;
+                    if (parent.classList.contains('floating-label')) {
+                        parent.classList.remove('floating-label');
+                    }
+                }
+                
+                // Add animation on focus
+                element.addEventListener('focus', function() {
+                    this.parentElement.classList.add('input-focused');
+                });
+                
+                element.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('input-focused');
+                });
+            });
+            
+            // Organize fields into two columns where appropriate
+            const formGroups = document.querySelectorAll('.form-group');
+            let currentRow = null;
+            
+            formGroups.forEach((group, index) => {
+                const fieldType = group.querySelector('input, select, textarea');
+                
+                // Skip file inputs, textareas, and some specific fields from columns layout
+                if (fieldType && (fieldType.type === 'file' || fieldType.tagName === 'TEXTAREA' || 
+                                 fieldType.name === 'description' || fieldType.name === 'address')) {
+                    return;
+                }
+                
+                if (index % 2 === 0) {
+                    currentRow = document.createElement('div');
+                    currentRow.className = 'form-row';
+                    group.parentNode.insertBefore(currentRow, group);
+                }
+                
+                const col = document.createElement('div');
+                col.className = 'form-col';
+                col.appendChild(group.cloneNode(true));
+                currentRow.appendChild(col);
+                
+                group.remove();
+            });
+            
+            // Get references to the district and area dropdowns
+            const districtSelect = document.querySelector('select[name="district"]');
+            const areaSelect = document.querySelector('select[name="area"]');
+            
+            if (!districtSelect || !areaSelect) {
+                console.error("Could not find district or area select elements");
+                return;
+            }
+            
+            // Get the correct URL from the hidden field
+            let getAreasUrl = document.getElementById('debug-url').value;
+            console.log("Using URL path:", getAreasUrl);
+            
+            // Function to update areas based on selected district
+            function updateAreas() {
+                const districtValue = districtSelect.value;
+                console.log("District changed to:", districtValue);
+                
+                // Clear current options
+                areaSelect.innerHTML = '<option value="">----------</option>';
+                
+                if (districtValue) {
+                    const url = getAreasUrl + "?district=" + encodeURIComponent(districtValue);
+                    console.log("Fetching from URL:", url);
+                    
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log("Received data:", data);
+                            // Add new options
+                            if (data.areas && Array.isArray(data.areas)) {
+                                data.areas.forEach(area => {
+                                    const option = document.createElement('option');
+                                    option.value = area;
+                                    option.textContent = area;
+                                    areaSelect.appendChild(option);
+                                });
+                                console.log("Added", data.areas.length, "areas to dropdown");
+                            } else {
+                                console.error("Invalid data structure received:", data);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching areas:", error);
+                        });
+                }
+            }
+            
+            // Add event listener
+            console.log("Adding change event listener to district select");
+            districtSelect.addEventListener('change', updateAreas);
+            
+            // Initialize areas on page load if district is already selected
+            if (districtSelect.value) {
+                console.log("District already selected, initializing areas");
+                updateAreas();
+            }
+            
+            // Add subtle hover effect to form container
+            const formContainer = document.querySelector('.form-container');
+            formContainer.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 15px 40px rgba(47, 128, 237, 0.15)';
+            });
+            
+            formContainer.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
+            });
+        });
+    </script>
+</body>
+</html>

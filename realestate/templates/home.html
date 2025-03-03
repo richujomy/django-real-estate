@@ -1,0 +1,620 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate India - Property Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Custom CSS */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url("{% static 'images/hero-bg.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        
+        .search-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box .nav-tabs {
+            border-bottom: none;
+        }
+        
+        .search-box .nav-link {
+            border: none;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .search-box .nav-link.active {
+            background-color: #ff5a5f;
+            color: white;
+        }
+        
+        .property-card {
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            margin-top: 10px;
+        }
+        
+        .top-cities img {
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .city-card {
+            position: relative;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .city-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 15px;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            background-color: #222;
+            padding: 15px 0;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'images/logo.png' %}" alt="Real Estate India" height="40">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="buyDropdown" role="button" data-bs-toggle="dropdown">
+                            Buy
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Residential</a></li>
+                            <li><a class="dropdown-item" href="#">Commercial</a></li>
+                            <li><a class="dropdown-item" href="#">Land/Plot</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="rentDropdown" role="button" data-bs-toggle="dropdown">
+                            Rent
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Residential</a></li>
+                            <li><a class="dropdown-item" href="#">Commercial</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="sellDropdown" role="button" data-bs-toggle="dropdown">
+                            Sell
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Post Property</a></li>
+                            <li><a class="dropdown-item" href="#">Submit Requirements</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home Loans</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'user_dashboard' %}" class="btn btn-outline-primary me-2">Dashboard</a>
+                        <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'my_inquiries' %}">My Messages</a>
+</li>
+{% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Search -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-4">
+                    <h1 class="display-4 fw-bold">Find Your Dream Property</h1>
+                    <p class="lead">Thousands of properties listed for sale and rent across India</p>
+                </div>
+                <div class="col-lg-10 mx-auto">
+                    <div class="search-box">
+                        <ul class="nav nav-tabs nav-justified mb-3" id="propertyTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buy-content" type="button" role="tab">Buy</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="rent-tab" data-bs-toggle="tab" data-bs-target="#rent-content" type="button" role="tab">Rent</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="sell-tab" data-bs-toggle="tab" data-bs-target="#sell-content" type="button" role="tab">Sell</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="propertyTabContent">
+                            <div class="tab-pane fade show active" id="buy-content" role="tabpanel">
+                                <form action="{% url 'filter_properties' %}" method="get">
+                                    <input type="hidden" name="type" value="for_sale">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <select class="form-select" name="property_type">
+                                                <option value="">All Property Types</option>
+                                                {% for type_choice, type_label in property_types %}
+                                                    <option value="{{ type_choice }}">{{ type_label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" name="district">
+                                                <option value="">All Districts</option>
+                                                {% for district in districts %}
+                                                    <option value="{{ district }}">{{ district }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" name="price_range">
+                                                <option value="">Any Price</option>
+                                                {% for range_value, range_label in price_ranges %}
+                                                    <option value="{{ range_value }}">{{ range_label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="submit" class="btn btn-danger w-100">Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="rent-content" role="tabpanel">
+                            <form action="{% url 'filter_properties' %}" method="get">
+                                <input type="hidden" name="type" value="for_rent">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="property_type">
+                                            <option value="">All Property Types</option>
+                                            {% for type_choice, type_label in property_types %}
+                                                <option value="{{ type_choice }}">{{ type_label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="district">
+                                            <option value="">All Districts</option>
+                                            {% for district in districts %}
+                                                <option value="{{ district }}">{{ district }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="price_range">
+                                            <option value="">Any Price</option>
+                                            {% for range_value, range_label in price_ranges %}
+                                                <option value="{{ range_value }}">{{ range_label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-danger w-100">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                            <div class="tab-pane fade" id="sell-content" role="tabpanel">
+                                <div class="text-center py-4">
+                                    <h5>Want to sell your property?</h5>
+                                    <p>List your property and reach thousands of genuine buyers and tenants</p>
+                                    <a href="{% url 'sell_property' %}" class="btn btn-danger px-4 py-2">Post Your Property FREE</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h2 class="mb-0">Featured Properties</h2>
+                    <p class="text-muted">Handpicked properties for you</p>
+                </div>
+                <div class="col-md-4 text-md-end align-self-end">
+                    <a href="{% url 'property_list' %}">View Properties</a>
+
+                  
+                </div>
+            </div>
+            <div class="row">
+                {% for property in featured_properties %}
+                <div class="col-md-4">
+                    <div class="card property-card">
+                        <div class="position-relative">
+                            <img src="{{ property.images.first.image.url }}" class="card-img-top" alt="prpoert" style="height: 200px; object-fit: cover;">
+                            <span class="badge bg-success position-absolute top-0 end-0 m-2">{{ property.get_status_display }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">₹{{ property.price|intcomma }}</h5>
+                            <p class="card-text">{{ property.title }}</p>
+                            <p class="text-muted small"><i class="fas fa-map-marker-alt"></i> {{ property.address }}</p>
+                            <div class="property-features">
+                                <span><i class="fas fa-bed"></i> {{ property.bedrooms }} Beds</span>
+                                <span><i class="fas fa-bath"></i> {{ property.bathrooms }} Baths</span>
+                                <span><i class="fas fa-vector-square"></i> {{ property.area_sqft }} sq.ft</span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white d-flex justify-content-between">
+                            <a href="{% url 'property_detail' property.id %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            <button class="btn btn-sm btn-outline-danger"><i class="far fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <p>No featured properties available at the moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Cities -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h2>Explore Properties in Top Cities</h2>
+                    <p class="text-muted">Find your dream home in major cities across India</p>
+                </div>
+            </div>
+            <div class="row top-cities">
+                <div class="col-md-4 col-sm-6">
+                    <div class="city-card">
+                        <img src="{% static 'images/mumbai.jpg' %}" alt="Mumbai" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4>Mumbai</h4>
+                            <p class="mb-0">{{ mumbai_count }} Properties</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="city-card">
+                        <img src="{% static 'images/delhi.jpg' %}" alt="Delhi" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4>Delhi NCR</h4>
+                            <p class="mb-0">{{ delhi_count }} Properties</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="city-card">
+                        <img src="{% static 'images/bangalore.jpg' %}" alt="Bangalore" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4>Bangalore</h4>
+                            <p class="mb-0">{{ bangalore_count }} Properties</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="city-card">
+                        <img src="{% static 'images/hyderabad.jpg' %}" alt="Hyderabad" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4>Hyderabad</h4>
+                            <p class="mb-0">{{ hyderabad_count }} Properties</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="city-card">
+                        <img src="{% static 'images/pune.jpg' %}" alt="Pune" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4>Pune</h4>
+                            <p class="mb-0">{{ pune_count }} Properties</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="city-card">
+                        <img src="{% static 'images/chennai.jpg' %}" alt="Chennai" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4>Chennai</h4>
+                            <p class="mb-0">{{ chennai_count }} Properties</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h2>Our Services</h2>
+                    <p class="text-muted">Comprehensive real estate solutions for all your needs</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-block mb-3">
+                                <i class="fas fa-home text-primary fa-2x"></i>
+                            </div>
+                            <h4>Buy Property</h4>
+                            <p>Find your dream home from thousands of verified listings</p>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 d-inline-block mb-3">
+       
+                                <i class="fas fa-key text-danger fa-2x"></i>
+                            </div>
+                            <h4>Rent Property</h4>
+                            <p>Explore rental homes and apartments across major Indian cities</p>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-block mb-3">
+                                <i class="fas fa-tag text-success fa-2x"></i>
+                            </div>
+                            <h4>Sell Property</h4>
+                            <p>List your property for free and reach genuine buyers</p>
+                            <a href="#" class="btn btn-sm btn-outline-success">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h2>What Our Customers Say</h2>
+                    <p class="text-muted">Trusted by thousands of satisfied customers</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <p class="card-text">"Found my dream apartment within a week! The search filters made it so easy to find exactly what I was looking for. Highly recommend this platform."</p>
+                            <div class="d-flex align-items-center mt-3">
+                                <div class="flex-shrink-0">
+                                    <img src="{% static 'images/user1.jpg' %}" alt="User" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0">Rahul Sharma</h6>
+                                    <small class="text-muted">Bought apartment in Mumbai</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                            <p class="card-text">"As a property owner, I was able to list my property and find qualified tenants within days. The process was seamless and the support team was very helpful."</p>
+                            <div class="d-flex align-items-center mt-3">
+                                <div class="flex-shrink-0">
+                                    <img src="{% static 'images/user2.jpg' %}" alt="User" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0">Priya Patel</h6>
+                                    <small class="text-muted">Property owner in Bangalore</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <p class="card-text">"The home loan assistance saved me a lot of time and paperwork. Got approved for a great rate and closed on my new home much faster than expected!"</p>
+                            <div class="d-flex align-items-center mt-3">
+                                <div class="flex-shrink-0">
+                                    <img src="{% static 'images/user3.jpg' %}" alt="User" class="rounded-circle" width="50" height="50">
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0">Amit Verma</h6>
+                                    <small class="text-muted">First-time buyer in Delhi</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <h2>Ready to Find Your Dream Property?</h2>
+                    <p class="lead mb-0">Join thousands of satisfied customers and start your property journey today</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="{% url 'register' %}" class="btn btn-light btn-lg">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">About Us</h5>
+                    <p>Real Estate India is the leading property portal providing a platform for property buyers and sellers to connect in a convenient, secure environment.</p>
+                    <div class="mt-4">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Sitemap</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">Property Types</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Apartments</a></li>
+                        <li><a href="#">Houses & Villas</a></li>
+                        <li><a href="#">Commercial Spaces</a></li>
+                        <li><a href="#">Plots & Land</a></li>
+                        <li><a href="#">New Projects</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">Contact Us</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Main Street, Mumbai, India</li>
+                        <li><i class="fas fa-phone-alt me-2"></i> +91 98765 43210</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@realestateportal.com</li>
+                        <li><i class="fas fa-clock me-2"></i> Mon-Sat: 9:00 AM - 6:00 PM</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="copyright mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-md-0">© 2025 Real Estate Portal. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">Designed with <i class="fas fa-heart text-danger"></i> for property seekers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

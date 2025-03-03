@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/property_details.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="property-detail-container">
+    <!-- Property Header -->
+    <div class="property-header">
+        <div class="property-header-info">
+            <h1>{{ property.title }}</h1>
+            <div class="property-badge">{{ property.get_status_display }}</div>
+            <div class="property-price">₹{{ property.price }}</div>
+        </div>
+    </div>
+
+    <!-- Image Gallery -->
+    <div class="gallery-container">
+        <div id="propertyCarousel" class="carousel">
+            <div class="carousel-inner">
+                {% for image in property.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image.url }}" alt="{{ property.title }}">
+                    </div>
+                {% empty %}
+                    <div class="carousel-item active">
+                        <img src="https://via.placeholder.com/800x400?text=No+Image" alt="No Image">
+                    </div>
+                {% endfor %}
+            </div>
+            {% if property.images.count > 1 %}
+                <div class="carousel-controls">
+                    <button class="carousel-prev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="content-grid">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Property Highlights -->
+            <div class="property-highlights">
+                <div class="highlight-item">
+                    <i class="fas fa-bed"></i>
+                    <span>{{ property.bedrooms }} Beds</span>
+                </div>
+                <div class="highlight-item">
+                    <i class="fas fa-bath"></i>
+                    <span>{{ property.bathrooms }} Baths</span>
+                </div>
+                <div class="highlight-item">
+                    <i class="fas fa-ruler-combined"></i>
+                    <span>{{ property.area_sqft }} sq ft</span>
+                </div>
+                <div class="highlight-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ property.location }}</span>
+                </div>
+            </div>
+
+            <!-- Property Description -->
+            <div class="property-description">
+                <h2>About This Property</h2>
+                <p>{{ property.description }}</p>
+            </div>
+
+            <!-- Property Features -->
+            <div class="property-features">
+                <h2>Property Details</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <span>Type:</span>
+                        <span>{{ property.get_property_type_display }}</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>For:</span>
+                        <span>{{ property.get_type_display }}</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Price:</span>
+                        <span>{{ property.price }}</span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Status:</span>
+                        <span>{{ property.status }} </span>
+                    </div>
+                    <div class="feature-item">
+                        <span>Listed at:</span>
+                        <span>{{ property.created_at}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="contact-sidebar">
+            <div class="contact-card">
+                <div class="agent-info">
+                    <i class="fas fa-user-circle"></i>
+                    <h3>{{ property.user.username }}</h3>
+                    <p>Property Agent</p>
+                </div>
+
+                {% if user.is_authenticated and user != property.user %}
+                    <button id="inquiry-btn"><i class="fas fa-comments"></i> Start Chat with Owner</button>
+                {% elif not user.is_authenticated %}
+                    <a href="{% url 'login' %}?next={{ request.path }}"><i class="fas fa-sign-in-alt"></i> Login to Chat with Owner</a>
+                {% else %}
+                    <p><i class="fas fa-check-circle"></i> This is your property listing</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Inquiry Modal - Only rendered if user is not property owner -->
+    {% if user.is_authenticated and user != property.user %}
+    <div id="inquiry-modal">
+        <div class="modal-content">
+            <h5>Start a Conversation with the Owner</h5>
+            <button type="button" class="close-modal">×</button>
+            
+            <form method="post" action="{% url 'create_inquiry' property.id %}">
+                {% csrf_token %}
+                <div>
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="4" required placeholder="Hi, I'm interested in this property. Would like to know more about..."></textarea>
+                </div>
+                <button type="submit"><i class="fas fa-paper-plane"></i> Send Message</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal functionality - Only if the modal exists
+    const modal = document.getElementById('inquiry-modal');
+    const inquiryBtn = document.getElementById('inquiry-btn');
+    
+    if (modal && inquiryBtn) {
+        const closeBtn = modal.querySelector('.close-modal');
+        
+        inquiryBtn.onclick = function() {
+            modal.style.display = "flex";
+        }
+        
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+
+    // Carousel functionality
+    const carousel = document.getElementById('propertyCarousel');
+    if (carousel) {
+        const items = carousel.querySelectorAll('.carousel-item');
+        const prevBtn = carousel.querySelector('.carousel-prev');
+        const nextBtn = carousel.querySelector('.carousel-next');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            if (items.length === 0) return;
+            
+            items.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            items[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        // Initialize the first slide
+        if (items.length > 0) {
+            showSlide(0);
+        }
+
+        if (prevBtn) {
+            prevBtn.onclick = function() {
+                currentSlide = (currentSlide > 0) ? currentSlide - 1 : items.length - 1;
+                showSlide(currentSlide);
+            }
+        }
+
+        if (nextBtn) {
+            nextBtn.onclick = function() {
+                currentSlide = (currentSlide < items.length - 1) ? currentSlide + 1 : 0;
+                showSlide(currentSlide);
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Pending Agent Verifications</h2>
+<table border="1">
+    <tr>
+        <th>Agent</th>
+        <th>ID Proof</th>
+        <th>Business License</th>
+        <th>Actions</th>
+    </tr>
+    {% for verification in verifications %}
+    <tr>
+        <td>{{ verification.agent.user.username }}</td>
+        <td><a href="{{ verification.id_proof.url }}" target="_blank">View ID</a></td>
+        <td><a href="{{ verification.business_license.url }}" target="_blank">View License</a></td>
+        <td>
+            <a href="{% url 'verify_agent' verification.id %}">Review</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
