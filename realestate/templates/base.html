@@ -10,11 +10,91 @@
     <link rel="stylesheet" href="{% static 'css/chat.css' %}">
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{% static 'images/logo.jpg' %}" alt="Real Estate India" height="40" class="me-2">
+                <span>Real Estate India</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'filter_properties' %}">Buy/Rent/Sell</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'approved_agents_list' %}">Agents</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'my_inquiries' %}">My Messages</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="d-flex">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'user_dashboard' %}" class="btn btn-outline-primary me-2">Profile</a>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
  
     
     {% block content %}
         
     {% endblock  %}
+
+     <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+                    <h5 class="fw-bold mb-4">About Us</h5>
+                    <p class="opacity-75">Real Estate India is the leading property portal providing a platform for property buyers and sellers to connect in a convenient, secure environment.</p>
+                    <div class="mt-4">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+                    <h5 class="fw-bold mb-4">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Sitemap</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+                    <h5 class="fw-bold mb-4">Property Types</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Apartments</a></li>
+                        <li><a href="#">Houses & Villas</a></li>
+                        <li><a href="#">Commercial Spaces</a></li>
+                        <li><a href="#">Plots & Land</a></li>
+                        <li><a href="#">New Projects</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+                    <h5 class="fw-bold mb-4">Contact Us</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Main Street, Mumbai, India</li>
+                        <li><i class="fas fa-phone-alt me-2"></i> +91 98765 43210</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@realestateportal.com</li>
+                        <li><i class="fas fa-clock me-2"></i> Mon-Sat: 9:
         
 <!-- Add these before closing </body> tag -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

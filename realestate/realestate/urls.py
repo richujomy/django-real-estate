@@ -25,7 +25,7 @@ urlpatterns = [
     path ('accounts/',include('accounts.urls')),
     path ('properties/',include('properties.urls')),
     path ('agents/',include('agents.urls')),
-     path('properties/filter/', views.filter_properties, name='filter_properties'),
+    path('properties/filter/', views.filter_properties, name='filter_properties'),
     
  ]
 
