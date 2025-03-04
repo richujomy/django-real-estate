@@ -26,7 +26,7 @@ urlpatterns = [
     path ('properties/',include('properties.urls')),
     path ('agents/',include('agents.urls')),
     path('properties/filter/', views.filter_properties, name='filter_properties'),
-    
+     path('properties/<str:district>/', views.district_properties, name='district_properties'),
  ]
 
 

@@ -307,6 +307,7 @@
         </div>
     </section>
 
+    <!-- CTA Section -->    
     <section class="cta-section">
         <div class="container">
             <div class="row align-items-center">
@@ -315,7 +316,11 @@
                     <p class="lead text-white mb-0 opacity-90">Join thousands of satisfied customers and start your property journey today</p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'filter_properties' %}" class="btn btn-light btn-lg rounded-pill px-5 py-3 fw-bold">Find your perfect property</a>
+                {% else %}
                     <a href="{% url 'register' %}" class="btn btn-light btn-lg rounded-pill px-5 py-3 fw-bold">Get Started</a>
+                {% endif %}
                 </div>
             </div>
         </div>
@@ -366,72 +371,84 @@
     </section>
 
     <!-- Top Cities -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <h2 class="section-heading mx-auto">Explore Properties in Top Cities</h2>
-                    <p class="text-muted">Find your dream home in major cities across India</p>
-                </div>
+  <section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="section-heading mx-auto">Explore Properties in Top Cities</h2>
+                <p class="text-muted">Find your dream home in major cities across India</p>
             </div>
-            <div class="row top-cities g-4">
-                <div class="col-md-4 col-sm-6">
+        </div>
+        <div class="row top-cities g-4">
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'district_properties' district='Ernakulam' %}">
                     <div class="city-card">
                         <img src="{% static 'images/ernakulam.jpeg' %}" alt="Kochi" class="img-fluid w-100">
                         <div class="city-overlay">
-                            <h4 class="fw-bold">Kochi</h4>
+                            <h4 class="fw-bold">Ernakulam</h4>
                             <p class="mb-0">{{ ernakulam_count }} Properties</p>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'district_properties' district='Kottayam' %}">
                     <div class="city-card">
-                        <img src="{% static 'images/kottayam.jpg' %}" alt="Delhi" class="img-fluid w-100">
+                        <img src="{% static 'images/kottayam.jpg' %}" alt="Kottayam" class="img-fluid w-100">
                         <div class="city-overlay">
                             <h4 class="fw-bold">Kottayam</h4>
                             <p class="mb-0">{{ kottayam_count }} Properties</p>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'district_properties' district='Alappuzha' %}">
                     <div class="city-card">
-                        <img src="{% static 'images/Kozhikode.jpg' %}" alt="Bangalore" class="img-fluid w-100">
-                        <div class="city-overlay">
-                            <h4 class="fw-bold">Kozhikode</h4>
-                            <p class="mb-0">{{ kozhikode_count }} Properties</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="city-card">
-                        <img src="{% static 'images/Trivandrum.jpg' %}" alt="Hyderabad" class="img-fluid w-100">
-                        <div class="city-overlay">
-                            <h4 class="fw-bold">Trivandrum</h4>
-                            <p class="mb-0">{{ Thiruvananthapuram_count }} Properties</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="city-card">
-                        <img src="{% static 'images/Alappuzha.jpg' %}" alt="Pune" class="img-fluid w-100">
+                        <img src="{% static 'images/Alappuzha.jpg' %}" alt="Alappuzha" class="img-fluid w-100">
                         <div class="city-overlay">
                             <h4 class="fw-bold">Alappuzha</h4>
                             <p class="mb-0">{{ alappuzha_count }} Properties</p>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'district_properties' district='Kozhikode' %}">
                     <div class="city-card">
-                        <img src="{% static 'images/kannur.jpg' %}" alt="Chennai" class="img-fluid w-100">
+                        <img src="{% static 'images/Kozhikode.jpg' %}" alt="Kozhikode" class="img-fluid w-100">
                         <div class="city-overlay">
-                            <h4 class="fw-bold">Kannur</h4>
-                            <p class="mb-0">{{ kannur_count }} Properties</p>
+                            <h4 class="fw-bold">Kozhikode</h4>
+                            <p class="mb-0">{{ kozhikode_count }} Properties</p>
                         </div>
                     </div>
-                </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'district_properties' district='Kannur' %}">
+                    <div class="city-card">
+                        <img src="{% static 'images/Kannur.jpg' %}" alt="Kannur" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4 class="fw-bold">Kannur</h4>
+                            <p class="mb-0">{{ Kannur_count }} Properties</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="{% url 'district_properties' district='Thiruvananthapuram' %}">
+                    <div class="city-card">
+                        <img src="{% static 'images/Trivandrum.jpg' %}" alt="Thiruvananthapuram" class="img-fluid w-100">
+                        <div class="city-overlay">
+                            <h4 class="fw-bold">Thiruvananthapuram</h4>
+                            <p class="mb-0">{{ Thiruvananthapuram_count }} Properties</p>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Services Section -->
     <section class="py-5 bg-white">

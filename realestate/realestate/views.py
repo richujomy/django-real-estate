@@ -161,3 +161,59 @@ def filter_properties(request):
     }
     
     return render(request, 'property_filter.html', context)
+
+
+def district_properties(request, district):
+    """
+    View to filter properties by a specific district
+    """
+    # Ensure the district is properly capitalized
+    district = district.capitalize()
+    
+    # Filter properties for the specific district
+    all_properties = Property.objects.filter(location__district=district).order_by('-created_at')
+    
+    # Pagination
+    paginator = Paginator(all_properties, 9)  # Show 9 properties per page
+    page = request.GET.get('page')
+    properties = paginator.get_page(page)
+    
+    # Get price stats from the original queryset, not the paginated one
+    price_stats = all_properties.aggregate(min_price=Min('price'), max_price=Max('price'))
+    min_price = price_stats['min_price'] or 0
+    max_price = price_stats['max_price'] or 1000000
+    
+    # Get filter options for the form
+    property_types = Property._meta.get_field('property_type').choices
+    property_purposes = Property._meta.get_field('type').choices
+    districts = Location.objects.values_list('district', flat=True).distinct().order_by('district')
+    
+    # Create price ranges dynamically
+    step = (max_price - min_price) / 5
+    price_ranges = []
+    for i in range(5):
+        lower = min_price + (i * step)
+        upper = min_price + ((i + 1) * step)
+        if i == 0:
+            label = f"Under ₹{int(upper):,}"
+        elif i == 4:
+            label = f"Above ₹{int(lower):,}"
+        else:
+            label = f"₹{int(lower):,} - ₹{int(upper):,}"
+        price_ranges.append((f"{int(lower)}-{int(upper)}", label))
+    
+    context = {
+        'properties': properties,
+        'district': district,
+        'property_types': property_types,
+        'property_purposes': property_purposes,
+        'districts': districts,
+        'price_ranges': price_ranges,
+        'total_results': paginator.count,
+        'min_price': int(min_price),
+        'max_price': int(max_price),
+    }
+    
+    return render(request, 'property_filter.html', context)
+
+  
