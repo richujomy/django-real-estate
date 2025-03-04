@@ -14,7 +14,7 @@ class Agent(models.Model):
     verification_date = models.DateTimeField(null=True, blank=True)
     
     def __str__(self):
-        return f"{self.user.get_full_name()} - {self.location}"
+        return f"{self.user.username} - {self.location}"
 
 class AgentVerification(models.Model):
     STATUS_CHOICES = (

@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from .forms import AgentRegistrationForm, AgentLoginForm, AgentVerificationForm
-from .models import AgentVerification
+from .models import AgentVerification, Agent
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+
 
 def agent_register(request):
     if request.method == 'POST':
@@ -30,9 +31,15 @@ def agent_login(request):
         form = AgentLoginForm()
     return render(request, 'agents/login.html', {'form': form})
 
-@login_required
 def agent_dashboard(request):
-    return render(request, 'agents/dashboard.html')
+    is_verified = request.user.agent.is_verified
+    return render(request, 'agents/dashboard.html',{'is_verified': is_verified})
+
+@login_required
+def approved_agents_list(request):
+    approved_agents=Agent.objects.filter(is_verified=True)
+    context = {'approved_agents':approved_agents}
+    return render(request, 'agents/approved_agents_list.html',context)
 
 @staff_member_required
 def admin_verify_agents(request):

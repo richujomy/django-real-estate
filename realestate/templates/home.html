@@ -129,39 +129,22 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="buyDropdown" role="button" data-bs-toggle="dropdown">
+             
+                        <a>
                             Buy
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Residential</a></li>
-                            <li><a class="dropdown-item" href="#">Commercial</a></li>
-                            <li><a class="dropdown-item" href="#">Land/Plot</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="rentDropdown" role="button" data-bs-toggle="dropdown">
+                    
+                  
+                        <a>
                             Rent
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Residential</a></li>
-                            <li><a class="dropdown-item" href="#">Commercial</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="sellDropdown" role="button" data-bs-toggle="dropdown">
+                       
+                        <a>
                             Sell
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Post Property</a></li>
-                            <li><a class="dropdown-item" href="#">Submit Requirements</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Home Loans</a>
-                    </li>
-                </ul>
+                        
+                  
+                        <a class="nav-link" href="{% url 'approved_agents_list' %}">Agents</a>
                 <div class="d-flex">
                     {% if user.is_authenticated %}
                         <a href="{% url 'user_dashboard' %}" class="btn btn-outline-primary me-2">Dashboard</a>
